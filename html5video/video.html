@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<title>Untitled Document</title>
+<script language="javascript" src="jq1.6.1.js"></script>
+<style>
+body *{
+	border:1px solid red;
+}
+.all{
+	width:1200px;
+	overflow:hidden;
+	margin:0 auto;
+}
+.imgs{
+	position:absolute;
+	right:10px;
+	top:10px;
+	height: 98%;
+	width: 150px;
+	border-radius: 5px;
+	padding: 2px;
+	overflow: auto;
+	text-align:center;
+}
+.imgs img{
+	width:130px;
+	height:120px;
+	margin-bottom:10px;
+}
+#bfsd span{
+	float:left;
+}
+#bfsd div{
+	width:50px;
+	float:left;
+}
+#canvas{
+	border:1px solid #ccc;
+	position:absolute;
+	left:100px;
+}
+.buts{
+	position:absolute;
+	left:10px;
+	top:10px;
+	height: 98%;
+	width: 150px;
+	border-radius: 5px;
+	padding: 2px;
+	overflow: auto;
+	text-align:center;
+}
+.buts input{
+	width:120px;
+	border:none;
+	height:50px;
+	color:#FFF;
+	margin-bottom:10px;
+	border-radius:5px;
+}
+</style>
+<body>
+<div class="all">
+	<div id="videodiv" style="float:left;">
+          <video id="video" controls>
+              <source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>
+            你的浏览器不支持html5视频
+          </video>
+    </div>
+    <canvas id="canvas">
+</div>
+<div class="buts">
+    <input type="button" onClick="slow()" value="慢放">
+    <input type="button" onClick="fast()" value="快放">
+    <input type="button" onClick="play()" value="播放">
+    <input type="button" onClick="paused()" value="暂停">
+    <input type="button" onClick="s()" value="截图"/>
+    <input type="button" onClick="keep()" value="保存"/>
+</div>
+<div class="imgs">
+
+</div>
+<div id="bfsd">
+	<span>播放速度：</span>
+	<div>1</div>
+</div>
+<script type="text/javascript">
+window.onload = function(){
+	var video=document.getElementById("video");
+	var videoheight = $("#videodiv").height();
+	var videowidth = $("#videodiv").width();
+	video.setAttribute("height",videoheight);
+	video.setAttribute("width",videowidth);
+	setTimeout('',2000);
+}
+//定时刷新，防止在视频加载之前定义得到视频文件属性失败
+function sx(){
+	alert("1");
+}
+var video=document.getElementById("video");
+function slow(){
+	if(video.playbackRate>0.25){
+		video.playbackRate = video.playbackRate-0.25;
+		$("#bfsd div").html(video.playbackRate);
+	}
+}
+function fast(){
+	if(video.playbackRate<5){
+		video.playbackRate = video.playbackRate+0.25;
+		$("#bfsd div").html(video.playbackRate);
+	}
+}
+function play(){
+	video.play();
+}
+function paused(){
+	video.pause();
+}
+function s(){
+	var bufferCanvas = document.getElementById("canvas");
+	var buffer = bufferCanvas.getContext("2d");
+	buffer.drawImage(video,0,0,bufferCanvas.width,bufferCanvas.height);
+	alert(video.height);
+}
+
+/*
+var img = document.getElementById("img");
+img.src = image;
+*/
+
+function keep(){
+	var mycanvas = document.getElementById("canvas");
+	var image    = mycanvas.toDataURL("image/png");
+	
+	var imghtml = "<img src="+image+">";
+	$(".imgs").append(imghtml);
+}
+</script>
+<!--<source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>
+
+    <source src="mov/mov.ogg" type="video/ogg" codecs="theora,vorbis"/>-->
+</body> 
+</html>
+<script language="javascript">
+var canvas = document.createElement('canvas');
+canvas.setAttribute('width', 600);
+canvas.setAttribute('height', 600);
+canvas.setAttribute('id', 'canvas');
+var point = {};
+point.notFirst = false;
+
+var context = canvas.getContext("2d");
+$("#canvas").mousedown(function(e){//鼠标点击画布
+	//获得当前在画布的坐标
+	var mouseX = e.pageX - this.offsetLeft;//当前坐标＝鼠标距离窗口的坐标-画布距离窗口的坐标
+	var mouseY = e.pageY - this.offsetTop;
+	paint = true;
+	addClick(mouseX,mouseY);
+	redraw();
+});
+$("#canvas").mousemove(function(e){//鼠标点下去不放拖动
+	if(paint){
+		addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+		redraw();
+	}
+});
+
+$('#canvas').mouseup(function(e){
+  paint = false;
+});
+
+$('#canvas').mouseleave(function(e){
+  paint = false;
+});
+
+var clickX = Array();
+var clickY = Array();
+var clickDrag = new Array();
+var paint;
+
+function addClick(x,y,dragging){
+	clickX.push(x);
+	clickY.push(y);
+	clickDrag.push(dragging);
+}
+function redraw(){
+	var canvas = document.getElementById('canvas');
+	var context = canvas.getContext("2d");
+	context.lineJoin = "round";
+	context.strokeStyle = "#df4b26";
+	context.lineWidth = 5;
+	while(clickX.length > 0){
+		point.tx = point.x;
+		point.ty = point.y;
+		point.x = clickX.pop();
+		point.y = clickY.pop();
+		point.drag = clickDrag.pop();
+		if(point.drag && point.notFirst){
+			context.moveTo(point.tx, point.ty);
+		}else{
+			point.notFirst = true;
+			context.moveTo(point.x-1, point.y);
+		}
+		context.lineTo(point.x, point.y);
+		context.closePath();
+		context.stroke();
+	}
+}
+</script>
