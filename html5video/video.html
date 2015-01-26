@@ -4,6 +4,9 @@
 <title>Untitled Document</title>
 <script language="javascript" src="jq1.6.1.js"></script>
 <style>
+body{
+	margin:0;
+}
 body *{
 	border:1px solid red;
 }
@@ -11,6 +14,10 @@ body *{
 	width:1200px;
 	overflow:hidden;
 	margin:0 auto;
+}
+#videodiv{
+	text-align:center;
+	overflow:hidden;
 }
 .imgs{
 	position:absolute;
@@ -28,6 +35,12 @@ body *{
 	height:120px;
 	margin-bottom:10px;
 }
+#bfsd{
+	width:200px;
+	margin:0 auto;
+	text-align:center;
+	overflow:hidden;
+}
 #bfsd span{
 	float:left;
 }
@@ -38,7 +51,7 @@ body *{
 #canvas{
 	border:1px solid #ccc;
 	position:absolute;
-	left:100px;
+	top:0px;
 }
 .buts{
 	position:absolute;
@@ -59,44 +72,70 @@ body *{
 	margin-bottom:10px;
 	border-radius:5px;
 }
+#canvasnone{
+	display:none;
+}
 </style>
 <body>
 <div class="all">
-	<div id="videodiv" style="float:left;">
-          <video id="video" controls>
-              <source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>
+	<div id="videodiv">
+          <video id="video">
+              <!--<source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>-->
+    <source src="mov/mov.ogg" type="video/ogg" codecs="theora,vorbis"/>
             你的浏览器不支持html5视频
           </video>
     </div>
-    <canvas id="canvas">
+    <canvas id="canvas"></canvas>
+    <canvas id="canvasnone"></canvas>
+</div>
+<div id="bfsd">
+	<span>播放速度：</span>
+	<div>1</div>
 </div>
 <div class="buts">
     <input type="button" onClick="slow()" value="慢放">
     <input type="button" onClick="fast()" value="快放">
     <input type="button" onClick="play()" value="播放">
     <input type="button" onClick="paused()" value="暂停">
-    <input type="button" onClick="s()" value="截图"/>
+    <input type="button" onClick="s()" style="display:none;" value="截图"/>
     <input type="button" onClick="keep()" value="保存"/>
 </div>
 <div class="imgs">
 
 </div>
-<div id="bfsd">
-	<span>播放速度：</span>
-	<div>1</div>
-</div>
+
 <script type="text/javascript">
+var clickX = [];
+var clickY = [];
+var clickDrag = [];
+var paint;
 window.onload = function(){
+	var canvas = document.getElementById('canvas');
 	var video=document.getElementById("video");
-	var videoheight = $("#videodiv").height();
-	var videowidth = $("#videodiv").width();
-	video.setAttribute("height",videoheight);
-	video.setAttribute("width",videowidth);
-	setTimeout('',2000);
+	var height = $("#video").height();
+	var width = $("#video").width();
+	canvas.setAttribute("height",height);
+	canvas.setAttribute("width",width);
+	var canvasnone = document.getElementById('canvasnone');
+	canvasnone.setAttribute("height",height);
+	canvasnone.setAttribute("width",width);
+	var mleft = (1200-width)/2;
+	$("#canvas").css("margin-left",mleft+"px");
+	setTimeout('sx()',2000);
 }
 //定时刷新，防止在视频加载之前定义得到视频文件属性失败
 function sx(){
-	alert("1");
+	var canvas = document.getElementById('canvas');
+	var video=document.getElementById("video");
+	var height = $("#video").height();
+	var width = $("#video").width();
+	canvas.setAttribute("height",height);
+	canvas.setAttribute("width",width);
+	var canvasnone = document.getElementById('canvasnone');
+	canvasnone.setAttribute("height",height);
+	canvasnone.setAttribute("width",width);
+	var mleft = (1200-width)/2;
+	$("#canvas").css("margin-left",mleft+"px");
 }
 var video=document.getElementById("video");
 function slow(){
@@ -117,28 +156,51 @@ function play(){
 function paused(){
 	video.pause();
 }
+//截图
 function s(){
 	var bufferCanvas = document.getElementById("canvas");
 	var buffer = bufferCanvas.getContext("2d");
 	buffer.drawImage(video,0,0,bufferCanvas.width,bufferCanvas.height);
-	alert(video.height);
 }
 
 /*
 var img = document.getElementById("img");
 img.src = image;
 */
-
+//保存
 function keep(){
-	var mycanvas = document.getElementById("canvas");
-	var image    = mycanvas.toDataURL("image/png");
+	var bufferCanvas = document.getElementById("canvasnone");
+	var buffer = bufferCanvas.getContext("2d");
+	buffer.drawImage(video,0,0,bufferCanvas.width,bufferCanvas.height);
 	
+	var mycanvas = document.getElementById("canvas");
+	var ctx = mycanvas.getContext("2d");
+	buffer.drawImage(mycanvas,0,0,mycanvas.width,mycanvas.height);
+	
+	var mycanvas = document.getElementById("canvasnone");
+	var image = mycanvas.toDataURL("image/png");
 	var imghtml = "<img src="+image+">";
 	$(".imgs").append(imghtml);
+	
+	var mycanvas = document.getElementById("canvas");
+	var ctx = mycanvas.getContext("2d");
+	ctx.clearRect(0,0,mycanvas.width,mycanvas.height);	
+	/*keepraw();
+	var mycanvas = document.getElementById("canvas");
+	var ctx = mycanvas.getContext("2d");
+	var bufferCanvas = document.getElementById("canvasnone");
+	buffer.drawImage(bufferCanvas,10,0,ctx.width,ctx.height);
+	
+	var image = mycanvas.toDataURL("image/png");
+	var imghtml = "<img src="+image+">";
+	$(".imgs").append(imghtml);
+	var height = $("#video").height();
+	var width = $("#video").width();
+	ctx.clearRect(0,0,width,height);
+	*/
 }
 </script>
 <!--<source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>
-
     <source src="mov/mov.ogg" type="video/ogg" codecs="theora,vorbis"/>-->
 </body> 
 </html>
@@ -165,7 +227,6 @@ $("#canvas").mousemove(function(e){//鼠标点下去不放拖动
 		redraw();
 	}
 });
-
 $('#canvas').mouseup(function(e){
   paint = false;
 });
@@ -174,14 +235,11 @@ $('#canvas').mouseleave(function(e){
   paint = false;
 });
 
-var clickX = Array();
-var clickY = Array();
-var clickDrag = new Array();
-var paint;
+
 
 function addClick(x,y,dragging){
-	clickX.push(x);
-	clickY.push(y);
+	var sx = clickX.push(x);
+	var sy = clickY.push(y);
 	clickDrag.push(dragging);
 }
 function redraw(){
@@ -191,6 +249,7 @@ function redraw(){
 	context.strokeStyle = "#df4b26";
 	context.lineWidth = 5;
 	while(clickX.length > 0){
+		context.beginPath();
 		point.tx = point.x;
 		point.ty = point.y;
 		point.x = clickX.pop();
@@ -203,8 +262,27 @@ function redraw(){
 			context.moveTo(point.x-1, point.y);
 		}
 		context.lineTo(point.x, point.y);
-		context.closePath();
 		context.stroke();
+		context.closePath();
+		console.log(point);
 	}
+}
+function keepraw(){
+	var canvas = document.getElementById('canvas');
+	var context = canvas.getContext("2d");
+	context.beginPath();
+	context.lineJoin = "round";
+	context.strokeStyle = "#df4b26";
+	context.lineWidth = 6;
+	point.tx = point.x;
+	point.ty = point.y;
+	point.x = clickX.pop();
+	point.y = clickY.pop();
+	point.drag = clickDrag.pop();
+	point.notFirst = true;
+	context.moveTo(point.x-1, point.y);
+	context.lineTo(point.x, point.y);
+	context.stroke();
+	context.closePath();	
 }
 </script>
