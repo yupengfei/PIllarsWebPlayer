@@ -35,18 +35,19 @@ body *{
 	height:120px;
 	margin-bottom:10px;
 }
-#bfsd{
-	width:200px;
+#bf{
+	width:1200px;
 	margin:0 auto;
 	text-align:center;
 	overflow:hidden;
 }
-#bfsd span{
+#bf span{
 	float:left;
 }
-#bfsd div{
-	width:50px;
+#bf div{
+	width:300px;
 	float:left;
+	overflow:hidden;
 }
 #canvas{
 	border:1px solid #ccc;
@@ -54,7 +55,7 @@ body *{
 	top:0px;
 }
 .buts{
-	position:absolute;
+	/*position:absolute;
 	left:10px;
 	top:10px;
 	height: 98%;
@@ -62,6 +63,9 @@ body *{
 	border-radius: 5px;
 	padding: 2px;
 	overflow: auto;
+	text-align:center;*/
+	width:1200px;
+	margin:0 auto;
 	text-align:center;
 }
 .buts input{
@@ -80,21 +84,24 @@ body *{
 <div class="all">
 	<div id="videodiv">
           <video id="video">
-              <!--<source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>-->
-    <source src="mov/mov.ogg" type="video/ogg" codecs="theora,vorbis"/>
+              <source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>
+<!--    <source src="mov/mov.ogg" type="video/ogg" codecs="theora,vorbis"/>-->
             你的浏览器不支持html5视频
           </video>
     </div>
     <canvas id="canvas"></canvas>
     <canvas id="canvasnone"></canvas>
 </div>
-<div id="bfsd">
-	<span>播放速度：</span>
-	<div>1</div>
+<div id="bf">
+	<span class="bfsds">播放速度：</span>
+	<div class="bfsdd">1</div>
+    <span class="bfsjs">播放时间：</span>
+	<div class="bfsjd">1</div>
 </div>
 <div class="buts">
     <input type="button" onClick="slow()" value="慢放">
     <input type="button" onClick="fast()" value="快放">
+    
     <input type="button" onClick="play()" value="播放">
     <input type="button" onClick="paused()" value="暂停">
     <input type="button" onClick="s()" style="display:none;" value="截图"/>
@@ -103,12 +110,12 @@ body *{
 <div class="imgs">
 
 </div>
-
 <script type="text/javascript">
 var clickX = [];
 var clickY = [];
 var clickDrag = [];
 var paint;
+
 window.onload = function(){
 	var canvas = document.getElementById('canvas');
 	var video=document.getElementById("video");
@@ -121,7 +128,7 @@ window.onload = function(){
 	canvasnone.setAttribute("width",width);
 	var mleft = (1200-width)/2;
 	$("#canvas").css("margin-left",mleft+"px");
-	setTimeout('sx()',2000);
+	setTimeout('sx()',500);
 }
 //定时刷新，防止在视频加载之前定义得到视频文件属性失败
 function sx(){
@@ -141,15 +148,21 @@ var video=document.getElementById("video");
 function slow(){
 	if(video.playbackRate>0.25){
 		video.playbackRate = video.playbackRate-0.25;
-		$("#bfsd div").html(video.playbackRate);
+		$("#bf .bfsdd").html(video.playbackRate);
+	}else if(video.playbackRate<=0.25){
+		video.playbackRate = video.playbackRate-0.01;
 	}
+	$("#bf .bfsdd").html(video.playbackRate);
 }
 function fast(){
 	if(video.playbackRate<5){
 		video.playbackRate = video.playbackRate+0.25;
-		$("#bfsd div").html(video.playbackRate);
+		$("#bf .bfsdd").html(Math.round(video.playbackRate));
 	}
 }
+video.addEventListener("timeupdate", function(){
+	$(".bfsjd").html(Math.round(video.duration)+"/"+Math.round(video.currentTime));
+});
 function play(){
 	video.play();
 }
