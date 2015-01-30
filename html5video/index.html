@@ -22,7 +22,7 @@
 }
 </style>
 <body>
-<video id="video">
+<video id="video" controls>
 	<source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>
 <!--    <source src="mov/mov.ogg" type="video/ogg" codecs="theora,vorbis"/>-->
 你的浏览器不支持html5视频
@@ -41,13 +41,14 @@
 </div>
 </body>
 </html>
-<script language="javascript">
+<script>
 var video = document.getElementById("video");
 window.onload = function(){
 	video.defaultMuted=true;
 	var videoList = new Array();
 	var i = 0;
 	if(video.paused){
+		video.currentTime = 5;
 		video.play();
 	}
 	video.addEventListener("loadedmetadata",function()

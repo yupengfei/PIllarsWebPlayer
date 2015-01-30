@@ -79,12 +79,24 @@ body *{
 #canvasnone{
 	display:none;
 }
+.outer{
+	position: fixed; top: 0px; left: 0px;background: none repeat scroll 0% 0% rgb(0, 0, 0); opacity: 0.3; z-index: 9998; display:none;
+}
+.formdiv{
+	width:400px;
+	overflow:hidden;
+	position: absolute;
+    z-index: 9999;
+	background:#FFF;
+	display:none;
+}
 </style>
 <body>
 <div class="all">
 	<div id="videodiv">
           <video id="video">
-              <source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>
+              <!--<source src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4">-->
+              <source src="mov/mov.mp4" type="video/mp4">
 <!--    <source src="mov/mov.ogg" type="video/ogg" codecs="theora,vorbis"/>-->
             你的浏览器不支持html5视频
           </video>
@@ -105,10 +117,42 @@ body *{
     <input type="button" onClick="play()" value="播放">
     <input type="button" onClick="paused()" value="暂停">
     <input type="button" onClick="s()" style="display:none;" value="截图"/>
+    <input type="button" onClick="cTime('top')" value="上一帧">
+    <input type="button" onClick="cTime('bottom')" value="下一帧">
+    <input type="button" onClick="loop()" value="循环播放">
+    <!--<input type="button" onClick="loops()" value="入点出点">-->
     <input type="button" onClick="keep()" value="保存"/>
+    <input type="button" class="fullscr" value="全屏"/>
 </div>
 <div class="imgs">
 
+</div>
+<div class="formdiv">
+	<form>
+    	<table width="100%" height="200" border="0" cellspacing="0" cellpadding="0" class="formtable">
+		  <tr>
+            <td width="30%" align="right">是否开启：</td>
+            <td width="70%">
+            	<input name="s1" type="radio" value="开启" checked>开启
+                <input name="s1" type="radio" value="关闭">关闭
+            </td>
+          </tr>
+          <tr>
+            <td width="30%" align="right">入点（秒）：</td>
+            <td width="70%"><input type="text" class="inprd"></td>
+          </tr>
+          <tr>
+            <td align="right">出点（秒）：</td>
+            <td><input type="text" class="inpcd"></td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center">
+                <input type="button" class="submit" value="确定">
+                <input type="button" class="quit" value="取消">
+            </td>
+          </tr>
+        </table>
+    </form>
 </div>
 <script type="text/javascript">
 var clickX = [];
@@ -296,6 +340,111 @@ function keepraw(){
 	context.moveTo(point.x-1, point.y);
 	context.lineTo(point.x, point.y);
 	context.stroke();
-	context.closePath();	
+	context.closePath();
 }
+function cTime(the){
+	video.pause();
+	if(the=='top'){
+		document.getElementById('video').currentTime = document.getElementById('video').currentTime-0.02;
+	}else{
+		document.getElementById('video').currentTime = document.getElementById('video').currentTime+0.02;
+	}
+}
+function loop(){
+	if(video.loop==true){
+		video.loop = false;
+	}else{
+		video.loop = true;
+		if(video.currentTime==video.duration){
+			video.currentTime = 0;
+			video.play();
+		}
+	}
+}
+function loops(){
+	var schtml = $(".sc").html();
+	if(schtml==null){
+		$("body").append("<div class='sc'><div class='kaiguan'></div><div class='s'></div><div class='c'></div></div><div class='outer'></div>");
+	}
+	var height = $(window).height();
+		var width = $(window).width();
+		$(".outer").css({"height":height+"px","width":width+"px"});
+		$(".formdiv").css({"left":(width/2)-200+"px","top":(height/2)-200+"px"});
+		$(".outer").show(500);
+		$(".formdiv").show(500);
+	if(video.loop==true){
+		video.loop = false;
+	}else{
+		video.loop = true;
+		if(video.currentTime==video.duration){
+			video.currentTime = 0;
+			video.play();
+		}
+	}
+}
+$(".submit").click(function(){
+	var value = $("input[type=radio]:checked").val();
+	if(value=="开启"){
+		var rudian = $(".inprd").val();
+		var chudian = $(".inpcd").val();
+		if(rudian != ""){
+			var result = rudian.match(/^[0-9]*$/);
+			if(result==null){
+				alert("请输入整数");
+				return false;
+			}
+			if(rudian>video.duration){
+				alert("大于视频长度");
+				return false;
+			}
+		}else{
+			alert("请输入入点时间");
+			return false;
+		}
+		if(chudian != ""){
+			var result = chudian.match(/^[0-9]*$/);
+			if(result==null){
+				alert("请输入整数");
+				return false;
+			}
+			if(chudian>video.duration){
+				alert("大于视频长度");
+				return false;
+			}
+			if(chudian<=rudian){
+				alert("大于出点秒数");
+				return false;
+			}
+		}else{
+			alert("请输入出点时间");
+			return false;
+		}
+		$(".sc .kaiguan").html(value);
+		$(".sc .s").html(rudian);
+		$(".sc .c").html(chudian);
+		$(".outer").hide(500);
+		$(".formdiv").hide(500);
+		
+	}else{
+		$(".sc .kaiguan").html(value);
+		$(".sc .s").html("");
+		$(".sc .c").html("");
+		$(".outer").hide(500);
+		$(".formdiv").hide(500);
+	}
+});
+$(".quit").click(function(){
+	$(".outer").hide(500);
+	$(".formdiv").hide(500);
+});
+$(".fullscr").click(function(){
+	var element = video;
+  if(element.requestFullScreen) {
+    element.requestFullScreen();
+  } else if(element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if(element.webkitRequestFullScreen) {
+    element.webkitRequestFullScreen();
+  }
+});
 </script>

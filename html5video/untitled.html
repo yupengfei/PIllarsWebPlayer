@@ -1,0 +1,28 @@
+<!DOCTYPE html> 
+<html> 
+<meta charset="UTF-8">
+<body> 
+
+<button onclick="getCurTime()" type="button">获得当前时间的位置</button>
+<button onclick="setCurTime()" type="button">把时间位置设置为 5 秒</button>
+<br />
+<br />
+<video id="video1" controls>
+  <source src="mov/mov.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+
+<script>
+myVid=document.getElementById("video1");
+function getCurTime()
+  { 
+  alert(myVid.currentTime);
+  } 
+function setCurTime()
+  {
+  myVid.currentTime=5;
+  } 
+</script>
+
+</body>
+</html>
