@@ -1,0 +1,86 @@
+body{
+	margin:0;
+}
+body *{
+	border:1px solid red;
+}
+.all{
+	width:1200px;
+	overflow:hidden;
+	margin:0 auto;
+}
+#videodiv{
+	text-align:center;
+	overflow:hidden;
+}
+.imgs{
+	position:absolute;
+	right:10px;
+	top:10px;
+	height: 98%;
+	width: 150px;
+	border-radius: 5px;
+	padding: 2px;
+	overflow: auto;
+	text-align:center;
+}
+.imgs img{
+	width:130px;
+	height:120px;
+	margin-bottom:10px;
+}
+#bf{
+	width:1200px;
+	margin:0 auto;
+	text-align:center;
+	overflow:hidden;
+}
+#bf span{
+	float:left;
+}
+#bf div{
+	width:300px;
+	float:left;
+	overflow:hidden;
+}
+#canvas{
+	border:1px solid #ccc;
+	position:absolute;
+	top:0px;
+}
+.buts{
+	/*position:absolute;
+	left:10px;
+	top:10px;
+	height: 98%;
+	width: 150px;
+	border-radius: 5px;
+	padding: 2px;
+	overflow: auto;
+	text-align:center;*/
+	width:1200px;
+	margin:0 auto;
+	text-align:center;
+}
+.buts input{
+	width:120px;
+	border:none;
+	height:50px;
+	color:#FFF;
+	margin-bottom:10px;
+	border-radius:5px;
+}
+#canvasnone{
+	display:none;
+}
+.outer{
+	position: fixed; top: 0px; left: 0px;background: none repeat scroll 0% 0% rgb(0, 0, 0); opacity: 0.3; z-index: 9998; display:none;
+}
+.formdiv{
+	width:400px;
+	overflow:hidden;
+	position: absolute;
+    z-index: 9999;
+	background:#FFF;
+	display:none;
+}

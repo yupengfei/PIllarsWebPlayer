@@ -2,69 +2,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Untitled Document</title>
-<script language="javascript" src="jq1.6.1.js"></script>
+<title>播放</title>
+<script language="javascript" src="js/jq1.6.1.js"></script>
+<link href="css/index.css" rel="stylesheet" type="text/css">
 </head>
-<style>
-.progressBar
-{
-   width: 300px;
-   height: 10px;
-   backgroud-color: #00F;
-}
-.timeBar
-{
-   top: 0;
-   left: 0;
-   width: 0;
-   height: 100%;
-   background-color: #ccc;
-}
-</style>
 <body>
-<video id="video" controls>
-	<source src="mov/mov.mp4" type="video/mp4" codecs="avc1.42E011E,mp4a.40.2"/>
-<!--    <source src="mov/mov.ogg" type="video/ogg" codecs="theora,vorbis"/>-->
-你的浏览器不支持html5视频
-</video>
-<div class="buts">
-<input type="button" class="btnplay" value="播放/暂停">
-</div>
-<div class="progressBar">
-   <div class="timeBar"></div>
-</div>
-总时长<div class="zsc">
-</div>
-当前时常<div class="dqsc">
-</div>
-当前帧<div class="dqz">
-</div>
+    <div class="all">
+    	
+    </div>
 </body>
 </html>
-<script>
-var video = document.getElementById("video");
-window.onload = function(){
-	video.defaultMuted=true;
-	var videoList = new Array();
-	var i = 0;
-	if(video.paused){
-		video.currentTime = 5;
-		video.play();
-	}
-	video.addEventListener("loadedmetadata",function()
-	{
-		$(".zsc").html(Math.round(video.duration));
-	});
-	video.addEventListener("timeupdate", function()
-	{
-		i++;
-//		console.log(i);
-		$(".dqsc").html(video.currentTime);
-		$(".dqz").html(i);
-		videoList.push(i+"");
-		console.log(videoList.length);
-		
-		console.log(videoList[i-1]);
-	});
-}
-</script>
